@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: ahz-userhub-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: ahz_userhub
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./src/main/resources/sql:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - userhub-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: ahz-userhub-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - userhub-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Spring Boot 应用
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ahz-userhub-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring 配置
+      SPRING_PROFILES_ACTIVE: prod
+      # 数据库配置（使用服务名连接）
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ahz_userhub?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456
+      # Redis 配置（使用服务名连接）
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_DATABASE: 0
+      # 服务器配置
+      SERVER_PORT: 8080
+      SERVER_SERVLET_CONTEXT_PATH: /api
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - userhub-network
+    # 健康检查：检查应用是否启动（可选，如果不需要可以删除）
+    # healthcheck:
+    #   test: ["CMD-SHELL", "netstat -an | grep 8080 || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+
+volumes:
+  mysql-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  userhub-network:
+    driver: bridge
+

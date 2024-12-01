@@ -1,0 +1,45 @@
+# 生产环境配置文件
+# 用于 Docker 部署
+# @author ahz
+# @version 2.2
+
+spring:
+  application:
+    name: ahz-userhub-backend
+
+  # DataSource Config
+  # 注意：在 Docker Compose 中，这些值会被环境变量覆盖
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/ahz_userhub?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+
+  # Redis 配置
+  # 注意：在 Docker Compose 中，这些值会被环境变量覆盖
+  redis:
+    host: ${SPRING_REDIS_HOST:redis}
+    port: ${SPRING_REDIS_PORT:6379}
+    database: ${SPRING_REDIS_DATABASE:0}
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 8      # 最大连接数
+        max-idle: 8        # 最大空闲连接
+        min-idle: 0        # 最小空闲连接
+        max-wait: -1       # 最大等待时间（-1 表示无限等待）
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH:/api}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+

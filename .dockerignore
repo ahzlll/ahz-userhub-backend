@@ -1,0 +1,45 @@
+# Maven
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Test
+src/test/
+
+# Local config
+application-local.yml
+application-dev.yml
+*.properties.bak
+
