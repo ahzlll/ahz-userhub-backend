@@ -208,10 +208,7 @@ java -jar target/ahz-userhub-backend-0.0.1-SNAPSHOT.jar
 Started UserCenterApplication in X.XXX seconds
 ```
 
-此时可以访问以下接口进行验证：
-
-- **健康检查**：`http://localhost:8080/api/user/getInfo`（需要登录 Token）
-- **Swagger 文档**：`http://localhost:8080/api/doc.html`
+此时可以访问 [Swagger UI](http://localhost:8080/api/swagger-ui/index.html) 查看和测试 API 接口。
 
 如果启动失败，请检查：
 1. 数据库连接配置是否正确
@@ -256,191 +253,16 @@ Started UserCenterApplication in X.XXX seconds
 
 > 💡 **提示**: 建议使用 [Swagger UI](http://localhost:8080/api/swagger-ui/index.html) 查看和测试接口，所有接口都有详细的参数说明和示例。详细使用指南请参考 [SWAGGER_USAGE.md](./SWAGGER_USAGE.md)
 
-#### 1. 用户注册
-
-**POST** `/user/register`
-
-**请求体：**
-```json
-{
-  "userAccount": "testuser",
-  "userPassword": "12345678",
-  "checkPassword": "12345678"
-}
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "data": 1,
-  "message": "ok"
-}
-```
-
-#### 2. 用户登录
-
-**POST** `/user/login`
-
-**请求体：**
-```json
-{
-  "userAccount": "testuser",
-  "userPassword": "12345678"
-}
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": 1,
-      "username": "testuser",
-      "userAccount": "testuser",
-      "avatarUrl": "https://...",
-      "gender": "unknown",
-      "phone": "testphone",
-      "email": "test@example.com",
-      "userStatus": "active",
-      "createTime": "2024-01-01T00:00:00",
-      "userRole": "user"
-    }
-  },
-  "message": "ok"
-}
-```
-
-#### 3. 用户注销
-
-**POST** `/user/logout`
-
-**请求头：**
-```
-Authorization: <token>
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "data": 1,
-  "message": "ok"
-}
-```
-
-#### 4. 获取当前用户
-
-**GET** `/user/getInfo`
-
-**请求头：**
-```
-Authorization: <token>
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "data": {
-    "id": 1,
-    "username": "testuser",
-    "userAccount": "testuser",
-    "avatarUrl": "https://...",
-    "gender": "unknown",
-    "phone": "testphone",
-    "email": "test@example.com",
-    "userStatus": "active",
-    "createTime": "2024-01-01T00:00:00",
-    "userRole": "user"
-  },
-  "message": "ok"
-}
-```
-
-#### 5. 搜索用户（管理员）
-
-**GET** `/admin/getUserList?username=test`
-
-**请求头：**
-```
-Authorization: <token>
-```
-
-**说明：** 需要管理员权限（userRole = "admin"）
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "data": [
-    {
-      "id": 1,
-      "username": "testuser",
-      "userAccount": "testuser",
-      ...
-    }
-  ],
-  "message": "ok"
-}
-```
-
-#### 6. 删除用户（管理员）
-
-**POST** `/admin/deleteUser`
-
-**请求头：**
-```
-Authorization: <token>
-```
-
-**请求体：**
-```json
-1
-```
-
-**说明：** 需要管理员权限（userRole = "admin"），执行逻辑删除
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "data": true,
-  "message": "ok"
-}
-```
-
-## 技术特性
-
-### 1. 密码加密
-- 使用 Spring Security 的 `BCryptPasswordEncoder` 进行密码加密
-- 密码存储为 BCrypt 哈希值，不可逆
-
-### 2. Token 认证
-- 登录成功后生成 Token
-- Token 存储在 Redis 中，设置过期时间
-- 通过拦截器验证 Token 有效性
-- 使用 ThreadLocal 存储当前登录用户信息
-
-### 3. 用户信息脱敏
-- 返回用户信息时自动脱敏敏感字段（如手机号、邮箱）
-- 使用 DTO 对象进行数据传输
-
-### 4. 统一异常处理
-- 全局异常处理器统一处理业务异常
-- 自定义错误码和错误信息
-- 统一的错误响应格式
-
-### 5. 权限控制
-- 基于拦截器的权限校验
-- 管理员功能需要验证用户角色
-
-### 6. 跨域支持
-- 配置 CORS 跨域访问
-- 支持前后端分离部署
-
+| 接口 | 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|------|
+| 用户注册 | POST | `/user/register` | 用户账号注册 | 否 |
+| 用户登录 | POST | `/user/login` | 用户登录，返回 Token | 否 |
+| 用户注销 | POST | `/user/logout` | 退出登录，清除 Token | 是 |
+| 获取当前用户 | GET | `/user/getInfo` | 获取当前登录用户信息 | 是 |
+| 更新用户信息 | POST | `/user/updateInfo` | 更新当前用户信息 | 是 |
+| 搜索用户 | GET | `/admin/getUserList` | 管理员查询用户列表（支持模糊搜索） | 是（管理员） |
+| 删除用户 | POST | `/admin/deleteUser` | 管理员删除用户（逻辑删除） | 是（管理员） |
+| 更新用户（管理员） | POST | `/admin/updateUser` | 管理员更新用户信息 | 是（管理员） |
 
 ## 测试
 
@@ -494,9 +316,6 @@ java -jar target/ahz-userhub-backend-0.0.1-SNAPSHOT.jar
 - 检查请求头中是否携带 `Authorization` 字段
 - 确认 Token 未过期（Redis 中是否存在）
 - 验证 Token 格式是否正确
-
-
-
 
 ## 更新日志
 
