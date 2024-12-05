@@ -51,10 +51,20 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // 3. 权限校验（管理员接口需要 admin 角色）
         String requestURI = request.getRequestURI();
-        // 检查是否是管理员接口（/api/admin/* 需要管理员权限）
-        if (requestURI.contains("/admin/")) {
+        // 检查是否是管理员接口（/api/v1/users/{userId} 需要管理员权限，但 /api/v1/users/me 不需要）
+        // 管理员可以访问：GET /api/v1/users, GET /api/v1/users/{userId}, PUT/PATCH/DELETE /api/v1/users/{userId}
+        // 普通用户只能访问：GET /api/v1/users/me, PATCH /api/v1/users/me
+        if (requestURI.startsWith("/api/v1/users/") && !requestURI.equals("/api/v1/users/me")) {
+            // 检查是否是管理员
             if (user.getUserRole() == null || !"admin".equals(user.getUserRole())) {
-                log.warn("User {} attempted to access admin resource without permission", user.getId());
+                log.warn("User {} attempted to access admin resource without permission: {}", user.getId(), requestURI);
+                throw new BusinessException(ErrorCode.NO_AUTH, "无权限");
+            }
+        }
+        // 检查是否是管理员列表接口（GET /api/v1/users，不带路径参数）
+        if (requestURI.equals("/api/v1/users") && "GET".equals(request.getMethod())) {
+            if (user.getUserRole() == null || !"admin".equals(user.getUserRole())) {
+                log.warn("User {} attempted to access admin resource without permission: {}", user.getId(), requestURI);
                 throw new BusinessException(ErrorCode.NO_AUTH, "无权限");
             }
         }

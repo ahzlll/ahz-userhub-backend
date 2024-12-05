@@ -19,7 +19,7 @@
 
 首先调用登录接口获取 Token：
 
-1. 在 Swagger UI 中找到 `POST /user/login` 接口
+1. 在 Swagger UI 中找到 `POST /auth/login` 接口
 2. 点击接口展开详情
 3. 点击 **"Try it out"** 按钮
 4. 请求体已预设示例值，可以直接使用或修改：
@@ -44,7 +44,7 @@
 }
 ```
 
-> 💡 **提示**：如果没有测试账号，可以先调用 `/user/register` 接口注册一个新账号。
+> 💡 **提示**：如果没有测试账号，可以先调用 `/auth/register` 接口注册一个新账号。
 
 ### 2. 锁定 Token
 
@@ -59,7 +59,7 @@
 
 现在可以直接测试任何接口：
 
-1. 找到要测试的接口（如 `GET /user/getInfo`）
+1. 找到要测试的接口（如 `GET /api/v1/users/me`）
 2. 点击接口展开详情
 3. 点击 **"Try it out"** 按钮
 4. 修改请求参数（如果需要）
@@ -80,15 +80,17 @@
 
 ### 普通用户接口（需要登录）
 
-- `POST /user/logout` - 退出登录
-- `GET /user/getInfo` - 获取当前用户信息
-- `POST /user/updateInfo` - 更新用户信息
+- `POST /auth/logout` - 退出登录
+- `GET /api/v1/users/me` - 获取当前用户信息
+- `PATCH /api/v1/users/me` - 更新用户信息（部分更新）
 
 ### 管理员接口（需要登录 + admin 角色）
 
-- `GET /admin/getUserList` - 查询用户列表
-- `POST /admin/deleteUser` - 删除用户
-- `POST /admin/updateUser` - 更新用户信息（管理员）
+- `GET /api/v1/users` - 查询用户列表（支持分页、搜索和过滤）
+- `GET /api/v1/users/{userId}` - 获取指定用户信息
+- `PUT /api/v1/users/{userId}` - 全量更新用户信息
+- `PATCH /api/v1/users/{userId}` - 部分更新用户信息
+- `DELETE /api/v1/users/{userId}` - 删除用户（逻辑删除）
 
 > ⚠️ **注意**：管理员接口需要用户角色为 `admin`，普通用户无法访问。如果提示"无权限"，请使用管理员账号登录。
 
@@ -115,7 +117,7 @@
 **问题**：调用接口时返回 401 错误，提示"未登录"或"登录已过期"
 
 **解决方法**：
-- 重新调用 `/user/login` 接口获取新的 Token
+- 重新调用 `/auth/login` 接口获取新的 Token
 - 在 Authorize 对话框中更新 Token
 
 ### 2. 无权限访问管理员接口

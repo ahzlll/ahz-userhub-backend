@@ -68,7 +68,7 @@ public class SwaggerConfig {
                 .name("Authorization")
                 .description("请输入 Token，格式：直接输入 token 值即可（不需要 Bearer 前缀）\n\n" +
                         "获取 Token：\n" +
-                        "1. 先调用登录接口 `/user/login`\n" +
+                        "1. 先调用登录接口 `/auth/login`\n" +
                         "2. 从响应中复制 `data.token` 的值\n" +
                         "3. 粘贴到此处并点击 Authorize");
     }

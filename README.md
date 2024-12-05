@@ -255,14 +255,16 @@ Started UserCenterApplication in X.XXX seconds
 
 | 接口 | 方法 | 路径 | 说明 | 认证 |
 |------|------|------|------|------|
-| 用户注册 | POST | `/user/register` | 用户账号注册 | 否 |
-| 用户登录 | POST | `/user/login` | 用户登录，返回 Token | 否 |
-| 用户注销 | POST | `/user/logout` | 退出登录，清除 Token | 是 |
-| 获取当前用户 | GET | `/user/getInfo` | 获取当前登录用户信息 | 是 |
-| 更新用户信息 | POST | `/user/updateInfo` | 更新当前用户信息 | 是 |
-| 搜索用户 | GET | `/admin/getUserList` | 管理员查询用户列表（支持模糊搜索） | 是（管理员） |
-| 删除用户 | POST | `/admin/deleteUser` | 管理员删除用户（逻辑删除） | 是（管理员） |
-| 更新用户（管理员） | POST | `/admin/updateUser` | 管理员更新用户信息 | 是（管理员） |
+| 用户注册 | POST | `/auth/register` | 用户账号注册 | 否 |
+| 用户登录 | POST | `/auth/login` | 用户登录，返回 Token | 否 |
+| 用户注销 | POST | `/auth/logout` | 退出登录，清除 Token | 是 |
+| 获取当前用户 | GET | `/api/v1/users/me` | 获取当前登录用户信息 | 是 |
+| 更新用户信息 | PATCH | `/api/v1/users/me` | 更新当前用户信息（部分更新） | 是 |
+| 查询用户列表 | GET | `/api/v1/users` | 管理员查询用户列表（支持分页、搜索和过滤） | 是（管理员） |
+| 获取用户信息 | GET | `/api/v1/users/{userId}` | 管理员获取指定用户信息 | 是（管理员） |
+| 全量更新用户 | PUT | `/api/v1/users/{userId}` | 管理员全量更新用户信息 | 是（管理员） |
+| 部分更新用户 | PATCH | `/api/v1/users/{userId}` | 管理员部分更新用户信息 | 是（管理员） |
+| 删除用户 | DELETE | `/api/v1/users/{userId}` | 管理员删除用户（逻辑删除） | 是（管理员） |
 
 ## 测试
 
