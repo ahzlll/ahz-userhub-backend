@@ -22,7 +22,7 @@ import jakarta.annotation.Resource;
  * 处理当前登录用户相关的操作
  *
  * @author ahz
- * @version 3.0
+ * @version 3.0.1
  */
 @Tag(name = "用户接口", description = "当前用户信息管理接口")
 @RestController

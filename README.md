@@ -183,7 +183,7 @@ mvn spring-boot:run
 mvn clean package -DskipTests
 
 # 运行 JAR 包
-java -jar target/ahz-userhub-backend-0.0.1-SNAPSHOT.jar
+java -jar target/ahz-userhub-backend-3.0.1.jar
 ```
 
 打包后的 JAR 包可以部署到生产环境。
@@ -300,7 +300,7 @@ docker-compose up -d
 mvn clean package
 
 # 运行
-java -jar target/ahz-userhub-backend-0.0.1-SNAPSHOT.jar
+java -jar target/ahz-userhub-backend-3.0.1.jar
 ```
 
 ## 常见问题
@@ -320,6 +320,11 @@ java -jar target/ahz-userhub-backend-0.0.1-SNAPSHOT.jar
 - 验证 Token 格式是否正确
 
 ## 更新日志
+
+> 📌 **版本号说明**：本项目遵循[语义化版本规范](https://semver.org/lang/zh-CN/)（SemVer）
+> - **MAJOR**（主版本号）：不兼容的 API 修改（如 v2.0、v3.0）
+> - **MINOR**（次版本号）：向下兼容的功能性新增（如 v1.1、v2.1）
+> - **PATCH**（修订号）：向下兼容的问题修正或测试改进（如 v3.0.1）
 
 ### **v1.0** (2024-10-29)
 - 实现用户注册、登录、查询、删除功能
@@ -358,6 +363,22 @@ java -jar target/ahz-userhub-backend-0.0.1-SNAPSHOT.jar
 - 添加 docker-compose.yml，一键启动完整开发环境（MySQL + Redis + 应用）
 - 添加 application-prod.yml 生产环境配置
 - 优化部署文档，提供多种部署方式说明
+
+### **v3.0** (2024-12-05)
+- 重构 API 接口架构，采用 RESTful 风格设计
+- 分离认证接口为 `AuthController`，路径统一为 `/auth/*`
+- 分离用户接口为 `UserController`，路径为 `/api/v1/users/me`
+- 新增管理员接口 `AdminController`，路径为 `/api/v1/users`
+- 统一 API 版本控制，使用 `/api/v1/` 前缀
+- 完善 Swagger API 文档，添加详细的接口说明和参数描述
+
+### **v3.0.1** (2024-12-27)
+- 新增 `AdminControllerTest`，覆盖管理员接口的所有功能
+- 新增 `UserConvertorTest`，测试用户对象转换工具类
+- 新增 `GlobalExceptionHandlerTest`，测试全局异常处理
+- 增强 `AuthControllerTest`，新增 11 个测试用例
+- 增强 `UserControllerTest`，新增 6 个测试用例
+- 测试覆盖范围包括：正常流程、参数校验、异常场景、边界条件
 
 ## 版权声明
 

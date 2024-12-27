@@ -18,7 +18,7 @@ import java.util.List;
  * 配置 API 文档信息
  *
  * @author ahz
- * @version 2.2
+ * @version 3.0.1
  */
 @Configuration
 public class SwaggerConfig {
@@ -28,7 +28,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("AHZ UserHub API 文档")
-                        .version("2.2")
+                        .version("3.0.1")
                         .description("AHZ UserHub 用户中心后端服务 API 接口文档\n\n" +
                                 "**使用说明：**\n" +
                                 "1. 点击右上角的 🔒 **Authorize** 按钮\n" +

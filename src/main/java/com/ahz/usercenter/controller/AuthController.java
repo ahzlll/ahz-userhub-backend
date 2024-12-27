@@ -19,13 +19,14 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * 认证接口
  * 处理用户注册、登录、注销等认证相关操作
  *
  * @author ahz
- * @version 3.0
+ * @version 3.0.1
  */
 @Tag(name = "认证接口", description = "用户注册、登录、注销等认证相关接口")
 @RestController
@@ -112,9 +113,9 @@ public class AuthController {
         String token = request.getHeader("Authorization");
         if (StringUtils.isNotBlank(token)) {
             // 删除 Redis 中的 Token
-            @SuppressWarnings("null")
-            String nonNullToken = token;
-            tokenUtils.deleteToken(nonNullToken);
+            // StringUtils.isNotBlank() 已确保 token 不为 null
+            // 使用 Objects.requireNonNull 明确告诉静态分析工具
+            tokenUtils.deleteToken(Objects.requireNonNull(token));
         }
         return ResultUtils.success(1);
     }

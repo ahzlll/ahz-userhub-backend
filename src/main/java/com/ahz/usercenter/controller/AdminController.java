@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * 处理管理员对用户的管理操作
  *
  * @author ahz
- * @version 3.0
+ * @version 3.0.1
  */
 @Tag(name = "管理员管理", description = "管理员用户管理接口，需要管理员权限")
 @RestController
